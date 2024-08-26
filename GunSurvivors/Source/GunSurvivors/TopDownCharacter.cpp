@@ -28,28 +28,52 @@ void ATopDownCharacter::BeginPlay()
 	
 }
 
+bool ATopDownCharacter::TryMoveCharacter(const float DeltaTime)
+{
+	if(!CanMove)
+	{
+		return false;		
+	}
+	if(MovementDirection.Length() == 0.0f)
+	{
+		return false;
+	}
+
+	if(MovementDirection.Length() > 1.0f)
+	{
+		MovementDirection.Normalize();
+	}
+
+	const FVector2D DistanceToMove = MovementDirection * MovementSpeed * DeltaTime;
+
+	const FVector CurrentLocation = GetActorLocation();
+	const FVector NewLocation = CurrentLocation + FVector(DistanceToMove.X, 0.0f, DistanceToMove.Y);
+
+	SetActorLocation(NewLocation);
+	return true;
+}
+
+void ATopDownCharacter::UpdateAnimation()
+{
+	UPaperFlipbook* SelectedFlipbook = FlipbookIdle;
+
+	if(!MovementDirection.IsZero())
+	{
+		SelectedFlipbook = FlipbookWalk;
+	}
+
+	if(!SelectedFlipbook)
+	{
+		return;
+	}
+	Flipbook->SetFlipbook(SelectedFlipbook);
+}
+
 void ATopDownCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(!CanMove)
-	{
-		return;		
-	}
-	if(MovementDirection.Length() > 0.0f)
-	{
-		if(MovementDirection.Length() > 1.0f)
-		{
-			MovementDirection.Normalize();
-		}
-
-		const FVector2D DistanceToMove = MovementDirection * MovementSpeed * DeltaTime;
-
-		const FVector CurrentLocation = GetActorLocation();
-		const FVector NewLocation = CurrentLocation + FVector(DistanceToMove.X, 0.0f, DistanceToMove.Y);
-
-		SetActorLocation(NewLocation);
-	}
+	TryMoveCharacter(DeltaTime);	
 }
 
 void ATopDownCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -62,7 +86,7 @@ void ATopDownCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 			MoveAction,
 			ETriggerEvent::Triggered,
 			this,
-			&ATopDownCharacter::MoveTriggerd
+			&ATopDownCharacter::MoveTriggered
 			);
 		EnhancedInputComponent->BindAction(
 			MoveAction,
@@ -91,18 +115,35 @@ void ATopDownCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	}
 }
 
-void ATopDownCharacter::MoveTriggerd(const FInputActionValue& Value)
+void ATopDownCharacter::UpdateCharacterRotation() const
+{
+	const FVector FlipbookScale = Flipbook->GetComponentScale();
+	if(MovementDirection.X < 0.0f)
+	{
+		Flipbook->SetWorldScale3D(FVector(-1.0f, FlipbookScale.Y, FlipbookScale.Y));
+	}
+	else if(MovementDirection.X > 0.0f)
+	{
+		Flipbook->SetWorldScale3D(FVector(1.0f, FlipbookScale.Y, FlipbookScale.Y));
+	}
+}
+
+void ATopDownCharacter::MoveTriggered(const FInputActionValue& Value)
 {
 	const FVector2d MoveActionValue = Value.Get<FVector2d>();
 
 	if(CanMove)
 	{
 		MovementDirection = MoveActionValue;
+		UpdateAnimation();
+
+		UpdateCharacterRotation();
 	}
 }
 void ATopDownCharacter::MoveCompleted(const FInputActionValue& Value)
 {
 	MovementDirection = FVector2d::ZeroVector;
+	UpdateAnimation();
 }
 
 void ATopDownCharacter::Shoot(const FInputActionValue& Value)

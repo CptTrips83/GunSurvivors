@@ -40,6 +40,12 @@ public:
 	UInputAction *ShootAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPaperFlipbook* FlipbookIdle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPaperFlipbook* FlipbookWalk;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MovementSpeed = 100.0f;
 
 	UPROPERTY(BlueprintReadWrite)
@@ -51,13 +57,24 @@ public:
 	ATopDownCharacter();
 
 	virtual void BeginPlay() override;
-
+	
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	void UpdateCharacterRotation() const;
 
-	void MoveTriggerd(const FInputActionValue& Value);
+	void MoveTriggered(const FInputActionValue& Value);
 	void MoveCompleted(const FInputActionValue& Value);
 
 	void Shoot(const FInputActionValue& Value);
+
+private:
+	/**
+	 * Tries to move the character based on the given DeltaTime.
+	 *
+	 * @param DeltaTime The time since the last frame was rendered.
+	 * @return True if character has been moved, false otherwise.
+	 */
+	bool TryMoveCharacter(float DeltaTime);
+	void UpdateAnimation();
 };
