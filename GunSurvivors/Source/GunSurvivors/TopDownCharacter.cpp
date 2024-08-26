@@ -30,16 +30,14 @@ void ATopDownCharacter::BeginPlay()
 
 bool ATopDownCharacter::TryMoveCharacter(const float DeltaTime)
 {
-	if(!CanMove)
-	{
-		return false;		
-	}
-	if(MovementDirection.Length() == 0.0f)
+	const float MoveDirectionLength = MovementDirection.Length();
+	
+	if(!CanMove || FMath::IsNearlyZero(MoveDirectionLength))
 	{
 		return false;
 	}
 
-	if(MovementDirection.Length() > 1.0f)
+	if(MoveDirectionLength > 1.0f)
 	{
 		MovementDirection.Normalize();
 	}
@@ -47,12 +45,25 @@ bool ATopDownCharacter::TryMoveCharacter(const float DeltaTime)
 	const FVector2D DistanceToMove = MovementDirection * MovementSpeed * DeltaTime;
 
 	const FVector CurrentLocation = GetActorLocation();
-	const FVector NewLocation = CurrentLocation + FVector(DistanceToMove.X, 0.0f, DistanceToMove.Y);
+	FVector NewLocation = CurrentLocation + FVector(DistanceToMove.X, 0.0f, DistanceToMove.Y);
 
+	if(!IsInMapBounds(NewLocation.X, NewLocation.Z))
+	{
+		return false;
+	}
+	
 	SetActorLocation(NewLocation);
 	return true;
 }
 
+/**
+ * Updates the animation of the character based on the movement direction.
+ * If the movement direction is non-zero, the flipbook for walking is set as the selected flipbook.
+ * If the selected flipbook is null, the method returns.
+ * The selected flipbook is set as the flipbook for the character.
+ *
+ * @see UPaperFlipbookComponent::SetFlipbook()
+ */
 void ATopDownCharacter::UpdateAnimation()
 {
 	UPaperFlipbook* SelectedFlipbook = FlipbookIdle;
@@ -115,6 +126,11 @@ void ATopDownCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	}
 }
 
+/**
+ * Updates the character's rotation based on the movement direction.
+ * If the movement direction is negative on the X-axis, the character's Flipbook is flipped horizontally.
+ * If the movement direction is positive on the X-axis, the character's Flipbook is not flipped.
+ */
 void ATopDownCharacter::UpdateCharacterRotation() const
 {
 	const FVector FlipbookScale = Flipbook->GetComponentScale();
@@ -149,5 +165,18 @@ void ATopDownCharacter::MoveCompleted(const FInputActionValue& Value)
 void ATopDownCharacter::Shoot(const FInputActionValue& Value)
 {
 	
+}
+
+/**
+ * Checks if the given coordinates are within the bounds of the map.
+ *
+ * @param XPos - The X coordinate to check.
+ * @param ZPos - The Z coordinate to check.
+ * @return true if the coordinates are within the map bounds, false otherwise.
+ */
+bool ATopDownCharacter::IsInMapBounds(const float XPos, const float ZPos) const
+{
+	return ((XPos > HorizontalLimits.X) && (XPos < HorizontalLimits.Y))
+		&& ((ZPos > VerticalLimits.X) && (ZPos < VerticalLimits.Y));	
 }
 
