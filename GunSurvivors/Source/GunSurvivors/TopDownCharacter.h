@@ -76,5 +76,16 @@ private:
 	 * @return True if character has been moved, false otherwise.
 	 */
 	bool TryMoveCharacter(float DeltaTime);
+	/**
+	 * Updates the character's animation based on the current movement direction.
+	 *
+	 * This method is called every frame to update the character's animation based on the current movement direction.
+	 * If the character is moving, the animation will be set to the walking flipbook. If the character is not moving, the
+	 * animation will be set to the idle flipbook. If no flipbook is set, this method will return without doing anything.
+	 *
+	 * @see FlipbookIdle
+	 * @see FlipbookWalk
+	 * @see Flipbook
+	 */
 	void UpdateAnimation();
 };

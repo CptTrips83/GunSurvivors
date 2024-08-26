@@ -135,8 +135,8 @@ void ATopDownCharacter::MoveTriggered(const FInputActionValue& Value)
 	if(CanMove)
 	{
 		MovementDirection = MoveActionValue;
+		
 		UpdateAnimation();
-
 		UpdateCharacterRotation();
 	}
 }
