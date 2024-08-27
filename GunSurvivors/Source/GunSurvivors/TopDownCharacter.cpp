@@ -26,7 +26,9 @@ void ATopDownCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if(const APlayerController *PlayerController = Cast<APlayerController>(Controller))
+	this->PlayerController = Cast<APlayerController>(Controller);
+	
+	if(this->PlayerController)
 	{
 		if(UEnhancedInputLocalPlayerSubsystem *Subsystem =
 			ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -41,7 +43,9 @@ void ATopDownCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	TryMoveCharacter(DeltaTime);	
+	TryMoveCharacter(DeltaTime);
+
+	
 }
 
 bool ATopDownCharacter::TryMoveCharacter(const float DeltaTime)

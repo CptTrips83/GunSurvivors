@@ -87,6 +87,9 @@ public:
 	bool IsInMapBounds(float XPos, float ZPos) const;
 
 private:
+
+	APlayerController* PlayerController;
+	
 	bool TryMoveCharacter(float DeltaTime);
 	void UpdateAnimation();
 };
