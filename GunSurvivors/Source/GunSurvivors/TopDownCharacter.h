@@ -73,7 +73,7 @@ public:
 	ATopDownCharacter();
 
 	virtual void BeginPlay() override;
-	
+
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -92,4 +92,5 @@ private:
 	
 	bool TryMoveCharacter(float DeltaTime);
 	void UpdateAnimation();
+	void UpdateGunParentRotation() const;
 };
