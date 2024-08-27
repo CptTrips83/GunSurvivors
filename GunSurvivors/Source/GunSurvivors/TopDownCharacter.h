@@ -7,7 +7,8 @@
 
 #include "Components/CapsuleComponent.h"
 #include "PaperFlipbookComponent.h"
-
+#include "Components/SceneComponent.h"
+#include "PaperSpriteComponent.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -29,6 +30,15 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UPaperFlipbookComponent* Flipbook;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	USceneComponent* GunParent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPaperSpriteComponent* GunSprite;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	USceneComponent* BulletSpawnPosition;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputMappingContext *InputMappingContext;

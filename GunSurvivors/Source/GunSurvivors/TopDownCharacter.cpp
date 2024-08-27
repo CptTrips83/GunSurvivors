@@ -11,6 +11,15 @@ ATopDownCharacter::ATopDownCharacter()
 
 	Flipbook = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("Flipbook"));
 	Flipbook->SetupAttachment(GetRootComponent());
+
+	GunParent = CreateDefaultSubobject<USceneComponent>(TEXT("Gun Parent"));
+	GunParent->SetupAttachment(GetRootComponent());
+
+	GunSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Gun Sprite"));
+	GunSprite->SetupAttachment(GunParent);
+
+	BulletSpawnPosition = CreateDefaultSubobject<USceneComponent>(TEXT("BulletSpawnPosition"));
+	BulletSpawnPosition->SetupAttachment(GunSprite);
 }
 
 void ATopDownCharacter::BeginPlay()
