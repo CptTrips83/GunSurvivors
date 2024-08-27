@@ -15,6 +15,7 @@
 #include "Components/InputComponent.h"
 #include "InputActionValue.h"
 #include "GameFramework/Controller.h"
+#include "Engine/TimerHandle.h"
 
 #include "TopDownCharacter.generated.h"
 
@@ -69,6 +70,14 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool CanMove = true;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool CanShoot = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ShootCooldownDuration = 0.3f;
+
+	FTimerHandle ShootCooldownTimer;
 	
 	ATopDownCharacter();
 
@@ -88,9 +97,40 @@ public:
 
 private:
 
-	APlayerController* PlayerController;
 	
+	
+	APlayerController* PlayerController;
+
+	/**
+ * Updates the character's rotation based on the movement direction.
+ * If the movement direction is negative on the X-axis, the character's Flipbook is flipped horizontally.
+ * If the movement direction is positive on the X-axis, the character's Flipbook is not flipped.
+ */
 	bool TryMoveCharacter(float DeltaTime);
+	/**
+ * Updates the animation of the character based on the movement direction.
+ * If the movement direction is non-zero, the flipbook for walking is set as the selected flipbook.
+ * If the selected flipbook is null, the method returns.
+ * The selected flipbook is set as the flipbook for the character.
+ *
+ * @see UPaperFlipbookComponent::SetFlipbook()
+ */
 	void UpdateAnimation();
+
+	/**
+	 * \brief Updates the rotation of the GunParent component based on the mouse position in the world.
+	 *
+	 * This function is called in the Tick function of the ATopDownCharacter class to continuously update the rotation of the GunParent component.
+	 * The updated rotation is calculated using the player's mouse position in the world.
+	 *
+	 * \note This function assumes that the PlayerController and GunParent components are valid.
+	 * If the PlayerController is not valid, the function will return early without updating the rotation.
+	 *
+	 * \see ATopDownCharacter::Tick()
+	 * \see ATopDownCharacter::PlayerController
+	 * \see ATopDownCharacter::GunParent
+	 */
 	void UpdateGunParentRotation() const;
+
+	void OnShootCooldownTimeout();
 };

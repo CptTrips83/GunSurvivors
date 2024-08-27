@@ -62,6 +62,8 @@ void ATopDownCharacter::UpdateGunParentRotation() const
 	GunParent->SetRelativeRotation(GunParentRotator);
 }
 
+
+
 void ATopDownCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -98,14 +100,7 @@ bool ATopDownCharacter::TryMoveCharacter(const float DeltaTime)
 	return true;
 }
 
-/**
- * Updates the animation of the character based on the movement direction.
- * If the movement direction is non-zero, the flipbook for walking is set as the selected flipbook.
- * If the selected flipbook is null, the method returns.
- * The selected flipbook is set as the flipbook for the character.
- *
- * @see UPaperFlipbookComponent::SetFlipbook()
- */
+
 void ATopDownCharacter::UpdateAnimation()
 {
 	UPaperFlipbook* SelectedFlipbook = FlipbookIdle;
@@ -163,11 +158,7 @@ void ATopDownCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	}
 }
 
-/**
- * Updates the character's rotation based on the movement direction.
- * If the movement direction is negative on the X-axis, the character's Flipbook is flipped horizontally.
- * If the movement direction is positive on the X-axis, the character's Flipbook is not flipped.
- */
+
 void ATopDownCharacter::UpdateCharacterRotation() const
 {
 	const FVector FlipbookScale = Flipbook->GetComponentScale();
@@ -201,7 +192,21 @@ void ATopDownCharacter::MoveCompleted(const FInputActionValue& Value)
 
 void ATopDownCharacter::Shoot(const FInputActionValue& Value)
 {
-	
+	if(!CanShoot) return;
+
+	CanShoot = false;
+
+	// Bullet spawn
+	GEngine->AddOnScreenDebugMessage(1,10.0f,FColor::White, TEXT("Shoot"));
+
+	GetWorldTimerManager().SetTimer(
+		this->ShootCooldownTimer,
+		this,
+		&ATopDownCharacter::OnShootCooldownTimeout,
+		1.0f,
+		false,
+		this->ShootCooldownDuration
+		); 
 }
 
 /**
@@ -217,3 +222,8 @@ bool ATopDownCharacter::IsInMapBounds(const float XPos, const float ZPos) const
 		&& ((ZPos > VerticalLimits.X) && (ZPos < VerticalLimits.Y));	
 }
 
+void ATopDownCharacter::OnShootCooldownTimeout()
+{
+	CanShoot = true;
+	GEngine->AddOnScreenDebugMessage(-1,10.0f,FColor::White, TEXT("Shoot Timeout"));
+}
