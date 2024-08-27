@@ -37,6 +37,13 @@ void ATopDownCharacter::BeginPlay()
 	
 }
 
+void ATopDownCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	TryMoveCharacter(DeltaTime);	
+}
+
 bool ATopDownCharacter::TryMoveCharacter(const float DeltaTime)
 {
 	const float MoveDirectionLength = MovementDirection.Length();
@@ -89,12 +96,7 @@ void ATopDownCharacter::UpdateAnimation()
 	Flipbook->SetFlipbook(SelectedFlipbook);
 }
 
-void ATopDownCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 
-	TryMoveCharacter(DeltaTime);	
-}
 
 void ATopDownCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
