@@ -16,6 +16,7 @@
 #include "InputActionValue.h"
 #include "GameFramework/Controller.h"
 #include "Engine/TimerHandle.h"
+#include "Bullet.h"
 
 #include "TopDownCharacter.generated.h"
 
@@ -61,6 +62,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector2D VerticalLimits;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ABullet> BulletActorToSpawn;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MovementSpeed = 100.0f;
