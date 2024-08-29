@@ -22,11 +22,21 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UPaperFlipbookComponent* Flipbook;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	ATopDownCharacter* Player;
+	ATopDownCharacter* Player;	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool IsAlive = true;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool CanFollow = true;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float MovementSpeed = 50.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float StopDistance = 20.0f;
+	
 	AEnemy();
 
 protected:
 	virtual void BeginPlay() override;
+	void TryMoveTowardsPlayer(float DeltaTime);
 
 public:	
 	virtual void Tick(float DeltaTime) override;
