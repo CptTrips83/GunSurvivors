@@ -37,6 +37,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	void TryMoveTowardsPlayer(float DeltaTime);
+	void UpdateFlipbookRotation();
 
 public:	
 	virtual void Tick(float DeltaTime) override;

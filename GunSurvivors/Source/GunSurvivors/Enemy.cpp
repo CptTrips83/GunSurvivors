@@ -48,10 +48,30 @@ void AEnemy::TryMoveTowardsPlayer(const float DeltaTime)
 	SetActorLocation(NewLocation);
 }
 
+void AEnemy::UpdateFlipbookRotation()
+{
+	const FVector CurrentLocation = GetActorLocation();
+	const FVector PlayerLocation = Player->GetActorLocation();
+
+	float FlipbookXScale = Flipbook->GetComponentScale().X;
+
+	if((PlayerLocation.X - CurrentLocation.X) >= 0.0f)
+	{
+		FlipbookXScale = 1;
+	}
+	else if((PlayerLocation.X + PlayerLocation.X) < 0.0f)
+	{
+		FlipbookXScale = -1;
+	}
+
+	Flipbook->SetWorldScale3D(FVector(FlipbookXScale, 1.0f, 1.0f));
+}
+
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 	TryMoveTowardsPlayer(DeltaTime);
+	UpdateFlipbookRotation();
 }
 
