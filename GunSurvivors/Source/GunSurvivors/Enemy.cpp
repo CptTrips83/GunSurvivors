@@ -17,6 +17,7 @@ AEnemy::AEnemy()
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+	
 
 	if(!Player)
 	{
@@ -74,4 +75,6 @@ void AEnemy::Tick(float DeltaTime)
 	TryMoveTowardsPlayer(DeltaTime);
 	UpdateFlipbookRotation();
 }
+
+
 
