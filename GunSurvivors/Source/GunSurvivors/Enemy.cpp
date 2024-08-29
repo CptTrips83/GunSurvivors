@@ -48,7 +48,7 @@ void AEnemy::TryMoveTowardsPlayer(const float DeltaTime)
 	SetActorLocation(NewLocation);
 }
 
-void AEnemy::UpdateFlipbookRotation()
+void AEnemy::UpdateFlipbookRotation() const
 {
 	const FVector CurrentLocation = GetActorLocation();
 	const FVector PlayerLocation = Player->GetActorLocation();
