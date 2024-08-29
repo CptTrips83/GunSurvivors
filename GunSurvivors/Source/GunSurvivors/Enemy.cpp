@@ -51,6 +51,8 @@ void AEnemy::TryMoveTowardsPlayer(const float DeltaTime)
 
 void AEnemy::UpdateFlipbookRotation() const
 {
+	if(!IsAlive) return;
+	
 	const FVector CurrentLocation = GetActorLocation();
 	const FVector PlayerLocation = Player->GetActorLocation();
 
@@ -74,6 +76,23 @@ void AEnemy::Tick(float DeltaTime)
 
 	TryMoveTowardsPlayer(DeltaTime);
 	UpdateFlipbookRotation();
+}
+
+void AEnemy::Die()
+{
+	if(!IsAlive) return;
+	IsAlive = false;
+	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Flipbook->SetFlipbook(DeadFlipbookAsset);
+	Flipbook->SetTranslucentSortPriority(-5);
+
+	float DestroyTime = 10.0f;
+	GetWorldTimerManager().SetTimer(DestroyTimerHandle, this, &AEnemy::OnDestroyTimeout, 1.0f, false, DestroyTime);
+}
+
+void AEnemy::OnDestroyTimeout()
+{
+	Destroy();
 }
 
 
