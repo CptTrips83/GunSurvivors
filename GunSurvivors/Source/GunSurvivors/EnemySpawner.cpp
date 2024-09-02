@@ -1,6 +1,8 @@
 
 #include "EnemySpawner.h"
 
+#include "GameFramework/GameMode.h"
+
 AEnemySpawner::AEnemySpawner()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -9,6 +11,15 @@ AEnemySpawner::AEnemySpawner()
 void AEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	Player = Cast<ATopDownCharacter>(
+		UGameplayStatics::GetActorOfClass(GetWorld(), ATopDownCharacter::StaticClass())
+		);
+
+	AGameModeBase* GameModeBase = UGameplayStatics::GetGameMode(GetWorld());
+	
+	GameMode = Cast<AMyGameMode>(GameModeBase);		
+	
 	StartSpawning();
 }
 
@@ -78,6 +89,23 @@ void AEnemySpawner::SpawnEnemy()
 		);
 
 	if(!Enemy) return;	
+
+	SetupEnemy(Enemy);
 	
 	TryIncreaseDifficulty();
+}
+
+void AEnemySpawner::SetupEnemy(AEnemy* Enemy)
+{
+	if(!Enemy) return;
+
+	Enemy->Player = Player;
+	Enemy->CanFollow = true;
+
+	Enemy->EnemyDiedDelegate.AddDynamic(this, &AEnemySpawner::OnEnemyDied);
+}
+
+void AEnemySpawner::OnEnemyDied()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, TEXT("Enemy Died Delegate Fired"));
 }

@@ -17,15 +17,6 @@ AEnemy::AEnemy()
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	
-
-	if(!Player)
-	{
-	    Player = Cast<ATopDownCharacter>(
-	    	UGameplayStatics::GetActorOfClass(GetWorld(), ATopDownCharacter::StaticClass())
-	    	);
-		CanFollow = true;
-	}	
 }
 
 void AEnemy::TryMoveTowardsPlayer(const float DeltaTime)
@@ -85,6 +76,8 @@ void AEnemy::Die()
 	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Flipbook->SetFlipbook(DeadFlipbookAsset);
 	Flipbook->SetTranslucentSortPriority(-5);
+
+	EnemyDiedDelegate.Broadcast();
 
 	float DestroyTime = 10.0f;
 	GetWorldTimerManager().SetTimer(DestroyTimerHandle, this, &AEnemy::OnDestroyTimeout, 1.0f, false, DestroyTime);

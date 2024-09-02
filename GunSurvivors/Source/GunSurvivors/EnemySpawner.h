@@ -5,7 +5,10 @@
 #include "GameFramework/Actor.h"
 
 #include "Enemy.h"
+#include "MyGameMode.h"
 #include "Engine/TimerHandle.h"
+#include "TopDownCharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "EnemySpawner.generated.h"
 
@@ -37,6 +40,9 @@ public:
 	float DecreaseTimeValue = 0.05;
 	
 	FTimerHandle SpawnTimerHandle;
+
+	ATopDownCharacter* Player;
+	AMyGameMode* GameMode;
 	
 	AEnemySpawner();
 
@@ -49,4 +55,9 @@ public:
 	void StartSpawning();
 	void StopSpawning();
 	void SpawnEnemy();
+
+	void SetupEnemy(AEnemy* Enemy);
+
+	UFUNCTION()
+	void OnEnemyDied();
 };
