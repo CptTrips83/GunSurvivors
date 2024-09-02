@@ -39,8 +39,27 @@ void AEnemySpawner::OnSpawnTimeout()
 	SpawnEnemy();
 }
 
+void AEnemySpawner::TryIncreaseDifficulty()
+{
+	// Increase Difficulty
+	TotalEnemyCount += 1;
+	// Check if TotalEnemyCount DifficultySpike is reached
+	if (TotalEnemyCount % DifficultySpikeInterval != 0) return;
+		
+	if (SpawnTime <= SpawnTimeMinimum) return;
+		
+	SpawnTime -= DecreaseTimeValue;
+
+	SpawnTime = (SpawnTime < SpawnTimeMinimum) ? SpawnTimeMinimum : SpawnTime;
+	
+	StopSpawning();
+	StartSpawning();
+}
+
 void AEnemySpawner::SpawnEnemy()
 {
+    // Spawn Enemy
+
 	// Get Random Position from Circle
 	FVector2D RandomPosition = FVector2D(FMath::VRand());	
 
@@ -58,6 +77,7 @@ void AEnemySpawner::SpawnEnemy()
 		FRotator::ZeroRotator
 		);
 
-	if(!Enemy) return;
+	if(!Enemy) return;	
 	
+	TryIncreaseDifficulty();
 }

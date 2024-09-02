@@ -24,6 +24,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SpawnDistance = 400.0f;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int TotalEnemyCount = 0;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int DifficultySpikeInterval = 10;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SpawnTimeMinimum = 0.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DecreaseTimeValue = 0.05;
+	
 	FTimerHandle SpawnTimerHandle;
 	
 	AEnemySpawner();
@@ -33,6 +45,7 @@ public:
 
 
 	void OnSpawnTimeout();
+	void TryIncreaseDifficulty();
 	void StartSpawning();
 	void StopSpawning();
 	void SpawnEnemy();
