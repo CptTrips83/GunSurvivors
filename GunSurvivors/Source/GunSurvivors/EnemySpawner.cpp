@@ -107,5 +107,9 @@ void AEnemySpawner::SetupEnemy(AEnemy* Enemy)
 
 void AEnemySpawner::OnEnemyDied()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, TEXT("Enemy Died Delegate Fired"));
+	int AddScore = 10;
+	GameMode->AddScore(10);
+
+	
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, FString::Printf(TEXT("Score: %d"), GameMode->Score));
 }

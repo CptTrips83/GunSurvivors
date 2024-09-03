@@ -14,4 +14,14 @@ class GUNSURVIVORS_API AMyGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+	public:
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+	int Score = 0;
+
+	AMyGameMode();
+
+	virtual void BeginPlay() override;
+
+	void SetScore(int NewScore);
+	void AddScore(int AddAmount);
 };
